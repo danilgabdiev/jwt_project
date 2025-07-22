@@ -9,11 +9,13 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
+
 	<groupId>ru.auth</groupId>
 	<artifactId>jwt_project</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>jwt_project</name>
 	<description>Danil`s project for authorization</description>
+
 
 	<url/>
 	<licenses>
@@ -31,6 +33,7 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+
 
 	<dependencies>
 		<!-- Core Starters -->
@@ -77,7 +80,6 @@
 			<scope>annotationProcessor</scope>
 		</dependency>
 
-
 		<!-- JWT Support -->
 		<dependency>
 			<groupId>com.auth0</groupId>
@@ -98,6 +100,7 @@
 			<artifactId>liquibase-core</artifactId>
 		</dependency>
 	</dependencies>
+
 
 	<build>
 		<plugins>
