@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/auth_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate.format_sql: true
+      hibernate.jdbc.lob.non_contextual_creation: true
+
+  liquibase:
+    change-log: classpath:db/migrations/master-changelog.sql
+
+jwt:
+  secret: ${JWT_SECRET:SUPER_SECRET_KEY}
+  access-token:
+    expiration-ms: 600000    # 10 минут
+  refresh-token:
+    expiration-ms: 604800000 # 7 дней
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    url: /openapi/api-contract.yaml
+    operations-sorter: alpha
+    tags-sorter: alpha

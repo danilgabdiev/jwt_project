@@ -1,0 +1,217 @@
+openapi: 3.1.0
+info:
+  title: Authorization Service
+  version: '1.0'
+  description: |
+    Сервис авторизации с JWT (access + refresh), ролями (admin, premium_user, guest),
+    отзывом токенов и единым контрактом для Swagger UI.
+  contact:
+    name: Danil Gabdiev
+servers:
+  - url: http://localhost:8080
+    description: Local server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    RegisterRequest:
+      type: object
+      required: [username, email, password]
+      properties:
+        username:
+          type: string
+          example: john_doe
+        email:
+          type: string
+          format: email
+          example: john@example.com
+        password:
+          type: string
+          format: password
+          example: secret123
+        roles:
+          type: array
+          items:
+            type: string
+          example: [ROLE_GUEST]
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          example: john_doe
+        password:
+          type: string
+          format: password
+          example: secret123
+    RefreshTokenRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIs...
+    AuthResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+
+security:
+  - BearerAuth: []
+
+paths:
+  /api/auth/register:
+    post:
+      summary: Регистрация пользователя
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: Успешная регистрация
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Ошибка валидации или дубликат
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/login:
+    post:
+      summary: Логин пользователя
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Успешный вход
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/refresh:
+    post:
+      summary: Обновление access-токена
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: Access-токен обновлён
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Невалидный refresh-токен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Истёкший или отсутствующий токен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/logout:
+    post:
+      summary: Logout (отзыв refresh-токена)
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: Токен отозван
+        '400':
+          description: Невалидный или не refresh-токен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/guest:
+    get:
+      summary: Приветствие гостя
+      tags: [guest]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: You are registered as guest
+        '401':
+          description: Неавторизован
+        '403':
+          description: Доступ запрещён
+
+  /api/premium_user:
+    get:
+      summary: Приветствие премиум-пользователя
+      tags: [premium_user]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: You are registered as premium user
+        '401':
+          description: Неавторизован
+        '403':
+          description: Доступ запрещён
+
+  /api/admin:
+    get:
+      summary: Приветствие администратора
+      tags: [admin]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: You are registered as admin
+        '401':
+          description: Неавторизован
+        '403':
+          description: Доступ запрещён
