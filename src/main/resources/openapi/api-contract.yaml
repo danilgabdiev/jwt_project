@@ -25,15 +25,15 @@ components:
       properties:
         username:
           type: string
-          example: john_doe
+          example: danil
         email:
           type: string
           format: email
-          example: john@example.com
+          example: danilgabdiev@yandex.ru
         password:
           type: string
           format: password
-          example: secret123
+          example: qwerty123
         roles:
           type: array
           items:
@@ -45,18 +45,18 @@ components:
       properties:
         username:
           type: string
-          example: john_doe
+          example: danilgabdiev
         password:
           type: string
           format: password
-          example: secret123
+          example: qwerty
     RefreshTokenRequest:
       type: object
       required: [refreshToken]
       properties:
         refreshToken:
           type: string
-          example: eyJhbGciOiJIUzI1NiIs...
+          example: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
     AuthResponse:
       type: object
       properties:
